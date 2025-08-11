@@ -1,0 +1,188 @@
+package templates
+
+import (
+  "markmind/internal/data/entities"
+)
+
+templ Overlay(state entities.OverlayState) {
+    switch state.Type {
+      case entities.ErrorOverlay:
+        @errorOverlay(state.Content)
+      case entities.SuccessOverlay:
+        @successOverlay(state.Content)
+      case entities.DirNameWindowOverlay:
+        @dirNameWindowOverlay(state.Content)
+      case entities.FileNameWindowOverlay:
+        @fileNameWindowOverlay(state.Content)
+      case entities.HiddenOverlay:
+        <div id="overlay"></div>
+      case entities.DeleteConfirmOverlay:
+        @deleteConfirmOverlay(state.Content)
+      default:
+        <div id="overlay"></div>
+    }
+}
+
+templ modalWindow(containsForm bool) {
+  <div
+    id="overlay"
+    class="
+      w-full
+      h-full
+      bg-slate-900/50
+      backdrop-blur
+      absolute
+      text-center
+    "
+    hx-on="click"
+    hx-get="/overlay/hide"
+    if containsForm {
+      hx-trigger="click target:#overlay"
+    } else {
+      hx-target="#overlay"
+    }
+    hx-swap="outerHTML"
+  >
+    { children... }
+  </div>
+}
+
+templ errorOverlay(msg string) {
+  @modalWindow(false) {
+    <div
+      class="
+        mt-48
+        p-4
+        inline-block
+        bg-red-500
+        border-2
+        border-red-900
+        text-white
+      "
+    >
+      { msg }
+    </div>
+  }
+}
+
+templ successOverlay(msg string) {
+  @modalWindow(false) {
+    <div
+      class="
+        mt-48
+        p-4
+        inline-block
+        bg-green-500
+        border-2
+        border-green-900
+        text-white
+      "
+    >
+      { msg }
+    </div>
+  }
+}
+
+templ fileNameWindowOverlay(msg string) {
+  @modalWindow(true) {
+    <form
+      hx-post="/create-file"
+      class="
+        mt-48
+        p-4
+        inline-block
+        bg-sky-900
+        border-2
+        border-sky-800
+        text-left
+        rounded
+      "
+    >
+      <span class="text-white">{ msg }</span><br/>
+      <input
+        id="fileName"
+        name="fileName"
+        type="text"
+        autofocus
+        class="px-2"
+      />
+      &nbsp;
+      <button
+        type="submit"
+        class="text-white material-symbols-outlined align-bottom"
+      >
+        save
+      </button>
+    </form>
+  }
+}
+
+templ dirNameWindowOverlay(msg string) {
+  @modalWindow(true) {
+    <form
+      hx-post="/create-dir"
+      class="
+        mt-48
+        p-4
+        inline-block
+        bg-sky-900
+        border-2
+        border-sky-800
+        text-left
+        rounded
+      "
+    >
+      <span class="text-white">{ msg }</span><br/>
+      <input
+        id="dirName"
+        name="dirName"
+        type="text"
+        autofocus
+        class="px-2"
+      />
+      &nbsp;
+      <button
+        type="submit"
+        class="text-white material-symbols-outlined align-bottom"
+      >
+        save
+      </button>
+    </form>
+  }
+}
+
+templ deleteConfirmOverlay(path string) {
+  @modalWindow(true) {
+    <form
+      hx-post={ "/delete" + path }
+      class="
+        mt-48
+        p-4
+        inline-block
+        bg-sky-900
+        border-2
+        border-sky-800
+        text-left
+        rounded
+        text-center
+      "
+    >
+      <span class="text-white">Do you want to delete '{ path }'?</span><br/>
+      <button
+        type="submit"
+        class="
+        text-white
+        material-symbols-outlined
+        mt-2
+        p-2
+        bg-sky-500
+        border-2
+        border-sky-600
+        rounded
+        "
+      >
+      check
+      </button>
+    </form>
+  }
+}

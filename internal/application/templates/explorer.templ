@@ -1,0 +1,112 @@
+package templates
+
+import (
+  "markmind/internal/data/entities"
+  "strings"
+)
+
+templ Explorer(entries *[]entities.MarkdownFileMeta, oobSwap bool) {
+  <div 
+    id="sipepanel"
+    class="
+      border-r-2
+      border-r-slate-900
+      row-span-full
+      row-start-2
+      col-start-1
+      col-span-2
+      bg-sky-900
+      relative
+      text-white
+    "
+    if oobSwap {
+      hx-swap-oob="true"
+    }
+  >
+    <div class="text-right">
+      <button
+        class="p-2 inline-block"
+        type="button"
+        hx-get="/overlay/new-dir"
+        hx-target="#overlay"
+        hx-swap="outerHTML"
+      >
+        New <span class="material-symbols-outlined align-bottom">folder</span>
+      </button>
+      <button
+        class="p-2 inline-block"
+        type="button"
+        hx-get="/overlay/new-file"
+        hx-target="#overlay"
+        hx-swap="outerHTML"
+      >
+        New <span class="material-symbols-outlined align-bottom">draft</span>
+      </button>
+    </div>
+
+    if entries != nil {
+      for _, entry := range *entries {
+        @explorerEntry(entry)
+      }
+    }
+  </div>
+}
+
+templ explorerEntry(entry entities.MarkdownFileMeta) {
+  <div
+    id={ "explorer-entry-" + strings.ReplaceAll(entry.Name, ".", "-") }
+    hx-on="click"
+    hx-get={ getUrl(entry) }
+    if entry.Name != ".." {
+      hx-trigger={ "click target:#explorer-entry-" + strings.ReplaceAll(entry.Name, ".", "-") }
+    }
+    if !entry.IsDir {
+      hx-target="#contentArea"
+    } else {
+      hx-target="#sipepanel"
+    }
+    hx-swap="outerHTML"
+    class="
+      p-2
+      cursor-pointer
+      relative
+      group
+    "
+  >
+    if entry.IsDir {
+      <span class="material-symbols-outlined align-bottom">
+        folder
+      </span>
+    } else {
+      <span class="material-symbols-outlined align-bottom">
+        draft
+      </span>
+    }  
+    { entry.Name }
+    if entry.Name != ".." {
+      <button
+        type="button"
+        class="
+          material-symbols-outlined
+          align-bottom
+          absolute
+          right-2
+          invisible
+          group-hover:visible
+        "
+        hx-on="click"
+        hx-get={ "/overlay/delete" + entry.Path }
+        hx-target="#overlay"
+      >
+        delete
+      </button>
+    }
+  </div>
+}
+
+func getUrl(entry entities.MarkdownFileMeta) string {
+  if entry.IsDir {
+    return "/explorer" + entry.Path
+  }
+  return "/openFile" + entry.Path
+}

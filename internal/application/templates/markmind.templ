@@ -1,0 +1,40 @@
+package templates
+
+import (
+  "strconv"
+  "markmind/internal/data/entities"
+)
+
+templ MarkMind(data *[]*entities.GraphNode) {
+  @Base() {
+    @Header()
+    @markMap(data)
+  }
+}
+
+templ markMap(data *[]*entities.GraphNode) {
+  <div class="col-span-12 row-span-11">
+    <svg
+      class="mx-auto h-full min-w-[800px]"
+      viewBox="0 0 1400 800"
+    >
+    <rect x="0" y="0" width="1400" height="800" class="fill-white"/>
+    for _, datum := range *data {
+      <g class="group">
+        <circle
+          cx={ strconv.FormatFloat(datum.Pos.X, 'f', -1, 64) }
+          cy={ strconv.FormatFloat(datum.Pos.Y, 'f', -1, 64) }
+          r="10" class="fill-slate-500 stroke-2 stroke-slate-800"
+        />
+        <text
+          x={ strconv.FormatFloat(datum.Pos.X + 20, 'f', -1, 64) }
+          y={ strconv.FormatFloat(datum.Pos.Y + 5, 'f', -1, 64) }
+          class="group-hover:visible invisible"
+        >
+          { datum.Name }
+        </text>
+      </g>
+    }
+    </svg>
+  </div>
+}

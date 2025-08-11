@@ -1,0 +1,100 @@
+package templates
+
+import (
+  "markmind/internal/data/entities"
+)
+
+templ ContentArea(state *entities.PageState, showEditButton bool, oobSwap bool) {
+  <div
+    id="contentArea"
+    class="
+      row-span-full
+      row-start-2
+      col-span-full
+      col-start-3
+      text-white
+      p-8
+      relative
+      overflow-auto
+    "
+    if oobSwap {
+      hx-swap-oob="true"
+    }
+  >
+  @templ.Raw( *state.Content )
+  if showEditButton {
+    @editButton(state)
+  }
+  </div>
+}
+
+templ editButton(state *entities.PageState) {
+  <button
+    class="
+      material-symbols-outlined align-bottom
+      bg-sky-500
+      p-2
+      rounded-full
+      absolute
+      top-4
+      right-4
+    "
+    hx-on="click"
+    hx-get={ "/editFile/" + state.Location }
+    hx-target="#contentArea"
+    hx-swap="outerHTML"
+  >
+    edit
+  </button>
+}
+
+templ FileEditor(state *entities.PageState) {
+  <div
+    id="contentArea"
+    class="
+      row-span-full
+      row-start-2
+      col-span-full
+      col-start-3
+      text-white
+      p-8
+      relative
+      overflow-auto
+    "
+  >
+    <form
+      class="h-full"
+      hx-post={ "/updateFile/" + state.Location }
+      hx-target="#overlay"
+      hx-swap="outerHTML"
+    >
+      <textArea
+        id="fileContent"
+        name="fileContent"
+        placeholder="File Content"
+        class="
+          w-full
+          h-full
+          text-black
+          p-2
+        "
+      >
+        { *state.Content }
+      </textArea>
+      <button
+        type="submit"
+        class="
+          material-symbols-outlined align-bottom
+          bg-sky-500
+          p-2
+          rounded-full
+          absolute
+          top-4
+          right-4
+        "
+      >
+        save
+      </button>
+    </form>
+  </div>
+}

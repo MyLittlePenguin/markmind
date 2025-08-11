@@ -1,0 +1,99 @@
+package templates
+
+import (
+  "markmind/internal/data/entities"
+)
+
+templ Page(state *entities.PageState) {
+  @Base() {
+    @Header()
+    @Body(state)
+  }
+}
+
+templ Base() {
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>MarkMind</title>
+
+  <script src="https://unpkg.com/htmx.org@2.0.1"></script>
+
+  <link rel="stylesheet" href="/static/css/style.css"/>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+  />
+
+  <meta 
+    name="htmx-config"
+    content='{
+      "responseHandling": [
+        {"code":"[23]..", "swap": true},
+        {"code": "[45]..", "swap": true, "target": "#overlay", "error": true}
+      ]
+    }'
+  />
+</head>
+<body class="
+    grid
+    grid-cols-12
+    grid-rows-12
+    bg-slate-900
+    h-screen
+    relative
+  "
+>
+  { children... }
+</body>
+</html>
+}
+
+templ Header() {
+  <header 
+    class="
+      font-bold
+      bg-sky-500
+      text-white
+      text-2xl
+      col-span-12
+      row-start-1 row-span-1
+      relative
+    "
+  >
+    <div
+      class="
+        p-2
+        left-10
+        top-1/2
+        -translate-y-1/2
+        absolute
+      "
+    >
+      MarkMind
+    </div>
+    <a
+      class="
+        material-symbols-outlined
+        align-bottom
+        -translate-y-1/2
+        top-1/2
+        right-6
+        absolute
+      "
+      href="/markmind"
+    >
+      menu
+    </a>
+  </header>
+}
+
+templ Body(state *entities.PageState) {
+  @Explorer(state.ExplorerEntries, false)
+  @ContentArea(state, false, false)
+  @Overlay(entities.OverlayState{
+    Type: entities.HiddenOverlay,
+    Content: "",
+  })
+}

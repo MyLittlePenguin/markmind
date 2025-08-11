@@ -1,0 +1,74 @@
+/* @tailwind base; */
+/* @tailwind components; */
+/* @tailwind utilities; */
+@import "tailwindcss";
+
+#contentArea h1 {
+  font-size: 2em;
+}
+
+#contentArea h2 {
+  font-size: 1.75em;
+}
+
+#contentArea h3 {
+  font-size: 1.5em;
+}
+
+#contentArea h4 {
+  font-size: 1.25em;
+}
+
+#contentArea h4,
+#contentArea h5,
+#contentArea h6,
+#contentArea h7 {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+#contentArea p {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+#contentArea>ul,
+#contentArea>ol {
+  padding: 1em;
+  padding-left: 1em;
+}
+
+#contentArea ul,
+#contentArea ol {
+  list-style-position: inside;
+  padding-left: 2em;
+}
+
+#contentArea ul,
+#contentArea ul ul,
+#contentArea ol ul {
+  list-style-type: circle;
+}
+
+#contentArea ul ul ul {
+  list-style-type: square;
+}
+
+#contentArea ol,
+#contentArea ol ol,
+#contentArea ul ol {
+  list-style-type: decimal;
+}
+
+#contentArea ol ol ol {
+  list-style-type: lower-alpha;
+}
+
+#contentArea a {
+  color: skyblue;
+  text-decoration: underline;
+}
+
+#contentArea a:visited {
+  color: purple;
+}
